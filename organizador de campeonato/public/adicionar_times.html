@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Times ao Campeonato</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Adicionar Times ao Campeonato</h1>
+        <form id="form-selecionar-time">
+            <label for="timeExistente">Selecione um Time Existente:</label>
+            <select id="timeExistente" name="timeExistente">
+                <!-- Os times serão carregados pelo JavaScript -->
+            </select>
+            <button type="submit" class="add-button">Adicionar Time Existente</button>
+        </form>
+
+        <h2>Ou</h2>
+
+        <form id="form-novo-time">
+            <label for="nomeTime">Nome do Time:</label>
+            <input type="text" id="nomeTime" required>
+
+            <label for="cidadeTime">Cidade:</label>
+            <input type="text" id="cidadeTime" required>
+
+            <label for="estadioTime">Estádio:</label>
+            <input type="text" id="estadioTime" required>
+
+            <button type="submit" class="add-button">Criar e Adicionar Novo Time</button>
+        </form>
+        
+        <!-- Botão Voltar com id para o event listener -->
+        <button class="back-button" id="voltar-btn">Voltar</button>
+    </div>
+    <script src="/adicionar_times.js"></script>
+</body>
+</html>

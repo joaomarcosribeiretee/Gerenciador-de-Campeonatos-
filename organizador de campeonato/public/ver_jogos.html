@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Jogos</title>
+    <link rel="stylesheet" href="ver_jogos.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Jogos do Campeonato</h1>
+        <div id="carousel-container">
+            <div id="rodadas-container">
+                <!-- Rodada atual será carregada aqui -->
+            </div>
+            <button id="prevButton" class="carousel-button" style="display: none;">Anterior</button>
+            <button id="nextButton" class="carousel-button" style="display: none;">Próxima</button>
+        </div>
+        <p id="no-jogos-message" style="display: none; color: #ffcc00;">Nenhum jogo foi gerado para este campeonato.</p>
+        <button class="back-button" onclick="window.location.href='/campeonatos'">Voltar</button>
+    </div>
+    <script src="ver_jogos.js"></script>
+</body>
+</html>

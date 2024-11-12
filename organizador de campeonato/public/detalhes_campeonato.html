@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Campeonato</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="campeonato-nome">Detalhes do Campeonato</h1>
+        <p id="campeonato-descricao"></p>
+    
+        <h2>Times Participantes</h2>
+        <div id="times-list" class="details-list"></div>
+    
+        <h2>Desempenho dos Times</h2>
+        <table id="desempenho-tabela" class="desempenho-tabela">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Jogos</th>
+                    <th>Vitórias</th>
+                    <th>Empates</th>
+                    <th>Derrotas</th>
+                    <th>Gols Pró</th>
+                    <th>Gols Contra</th>
+                    <th>Pontos</th>
+                </tr>
+            </thead>
+            <tbody id="desempenho-list">
+            </tbody>
+        </table>
+    
+        <div class="action-buttons">
+            <button class="back-button" id="voltar-btn">Voltar</button>
+            <button class="action-button" id="adicionar-time-btn">Adicionar Time</button>
+            <button class="action-button" id="ver-jogos-btn">Ver Jogos</button>
+            <button class="action-button" id="gerar-jogos-btn">Gerar Jogos</button>
+            <button class="action-button" id="apagar-campeonato-btn">Apagar</button>
+        </div>
+    </div>
+    
+    <script src="/detalhes_script.js"></script>
+</body>
+</html>
