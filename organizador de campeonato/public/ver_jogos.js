@@ -80,3 +80,9 @@ function updateNavigationButtons(rodadas) {
     document.getElementById('prevButton').style.display = currentRodada === 0 ? 'none' : 'block';
     document.getElementById('nextButton').style.display = currentRodada === rodadas.length - 1 ? 'none' : 'block';
 }
+
+// Navega para a página de edição de placar da rodada atual
+document.getElementById('editar-placar-btn').addEventListener('click', () => {
+    const campeonatoId = new URLSearchParams(window.location.search).get('campeonatoId');
+    window.location.href = `/editar_placar.html?campeonatoId=${campeonatoId}&rodada=${currentRodada + 1}`;
+});

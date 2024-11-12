@@ -86,4 +86,11 @@ document.getElementById('apagar-campeonato-btn').addEventListener('click', funct
     }
 });
 
+// Botão para editar placar da rodada
+document.getElementById('editar-placar-btn').addEventListener('click', () => {
+    const rodadaId = prompt("Digite o número da rodada que deseja editar:");
+    if (rodadaId) {
+        window.location.href = `/editar_placar.html?campeonatoId=${campeonatoId}&rodadaId=${rodadaId}`;
+    }
+});
 

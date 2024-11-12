@@ -263,6 +263,116 @@ app.get('/api/campeonatos/:campeonatoId/jogos', async (req, res) => {
     }
 });
 
+// Rota para obter jogos de uma rodada específica
+app.get('/api/campeonatos/:campeonatoId/rodadas/:rodadaId', async (req, res) => {
+    const { campeonatoId, rodadaId } = req.params;
+
+    try {
+        const [jogos] = await connection.promise().query(`
+            SELECT Jogo.jogo_id, Jogo.data_jogo, Jogo.gols_casa, Jogo.gols_visitante,
+                   casa.nome AS time_casa_nome, visitante.nome AS time_visitante_nome
+            FROM Jogo
+            JOIN Time AS casa ON Jogo.time_casa_id = casa.time_id
+            JOIN Time AS visitante ON Jogo.time_visitante_id = visitante.time_id
+            WHERE Jogo.campeonato_id = ? AND Jogo.rodada_id = ?
+        `, [campeonatoId, rodadaId]);
+
+        res.json({ jogos });
+    } catch (error) {
+        console.error('Erro ao buscar jogos da rodada:', error);
+        res.status(500).json({ message: 'Erro ao buscar jogos da rodada', error });
+    }
+});
+
+// Rota para obter todos os jogos de um campeonato
+app.get('/api/campeonatos/:campeonatoId/jogos', async (req, res) => {
+    const campeonatoId = req.params.campeonatoId;
+
+    try {
+        const [jogos] = await connection.promise().query(`
+            SELECT Jogo.jogo_id, Jogo.data_jogo, Jogo.gols_casa, Jogo.gols_visitante,
+                   casa.nome AS time_casa_nome, visitante.nome AS time_visitante_nome
+            FROM Jogo
+            JOIN Time AS casa ON Jogo.time_casa_id = casa.time_id
+            JOIN Time AS visitante ON Jogo.time_visitante_id = visitante.time_id
+            WHERE Jogo.campeonato_id = ?
+            ORDER BY Jogo.data_jogo ASC
+        `, [campeonatoId]);
+
+        res.json({ jogos });
+    } catch (error) {
+        console.error('Erro ao buscar jogos do campeonato:', error);
+        res.status(500).json({ message: 'Erro ao buscar jogos do campeonato', error });
+    }
+});
+
+// Rota para atualizar o placar de um jogo e o desempenho dos times
+app.post('/api/jogos/:jogoId/atualizar_placar', async (req, res) => {
+    const { jogoId } = req.params;
+    const { golsCasa, golsVisitante } = req.body;
+
+    console.log(`Atualizando placar para o jogoId: ${jogoId}`);
+    console.log(`Gols Casa: ${golsCasa}, Gols Visitante: ${golsVisitante}`);
+
+    if (!jogoId || isNaN(golsCasa) || isNaN(golsVisitante)) {
+        return res.status(400).json({ message: 'Dados inválidos' });
+    }
+
+    try {
+        // Atualiza o placar do jogo
+        await connection.promise().execute(
+            `UPDATE Jogo SET gols_casa = ?, gols_visitante = ? WHERE jogo_id = ?`,
+            [golsCasa, golsVisitante, jogoId]
+        );
+
+        // Aqui, o código continua para atualizar o desempenho dos times...
+        res.json({ message: 'Placar atualizado e desempenho das equipes atualizado!' });
+    } catch (error) {
+        console.error('Erro ao atualizar placar:', error);
+        res.status(500).json({ message: 'Erro ao atualizar placar e desempenho das equipes.', error });
+    }
+});
+
+
+// Função para atualizar a tabela de desempenho de um time
+async function atualizarDesempenho(timeId, campeonatoId, golsPro, golsContra, pontos) {
+    // Verifica se o time já possui um registro de desempenho no campeonato
+    const [desempenho] = await connection.promise().query(
+        `SELECT * FROM Desempenho WHERE time_id = ? AND campeonato_id = ?`, [timeId, campeonatoId]
+    );
+
+    if (desempenho.length > 0) {
+        const resultado = golsPro > golsContra ? 'vitorias' : golsPro === golsContra ? 'empates' : 'derrotas';
+
+        await connection.promise().execute(
+            `UPDATE Desempenho 
+             SET jogos = jogos + 1,
+                 ${resultado} = ${resultado} + 1,
+                 gols_pro = gols_pro + ?,
+                 gols_contra = gols_contra + ?,
+                 pontos = pontos + ?
+             WHERE time_id = ? AND campeonato_id = ?`,
+            [golsPro, golsContra, pontos, timeId, campeonatoId]
+        );
+    } else {
+        // Caso o desempenho não exista, insere uma nova linha
+        await connection.promise().execute(
+            `INSERT INTO Desempenho (time_id, campeonato_id, jogos, vitorias, empates, derrotas, gols_pro, gols_contra, pontos)
+             VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?)`,
+            [
+                timeId,
+                campeonatoId,
+                pontos === 3 ? 1 : 0,
+                pontos === 1 ? 1 : 0,
+                pontos === 0 ? 1 : 0,
+                golsPro,
+                golsContra,
+                pontos
+            ]
+        );
+    }
+}
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
